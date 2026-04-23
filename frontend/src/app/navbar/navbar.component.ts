@@ -3,10 +3,10 @@ import { RouterModule } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 @Component({
-    selector: 'app-navbar',
-    standalone: true,
-    imports: [RouterModule],
-    template: `
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [RouterModule],
+  template: `
     <nav class="navbar navbar-expand-lg topbar mb-4">
       <div class="container-xxl">
         <a class="navbar-brand fw-bold d-flex align-items-center gap-2" routerLink="/dashboard">
