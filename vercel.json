@@ -5,11 +5,11 @@
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "https://blockip.runasp.net/api/$1"
+            "destination": "http://blockip.runasp.net/api/$1"
         },
         {
             "source": "/swagger/(.*)",
-            "destination": "https://blockip.runasp.net/swagger/$1"
+            "destination": "http://blockip.runasp.net/swagger/$1"
         },
         {
             "source": "/(.*)",
