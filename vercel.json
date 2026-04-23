@@ -1,0 +1,19 @@
+{
+  "installCommand": "cd frontend && npm ci",
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/dist/frontend",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://site65118.siteasp.net/api/$1"
+    },
+    {
+      "source": "/swagger/(.*)",
+      "destination": "https://site65118.siteasp.net/swagger/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
