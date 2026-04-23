@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'app-navbar',
@@ -30,7 +31,7 @@ import { RouterModule } from '@angular/router';
               <a class="nav-link" routerLink="/logs" routerLinkActive="active">Security Logs</a>
             </li>
             <li class="nav-item ms-lg-2">
-              <a class="btn btn-sm topbar-btn" href="http://localhost:5068/swagger" target="_blank" rel="noreferrer">
+              <a class="btn btn-sm topbar-btn" [href]="environment.swaggerUrl" target="_blank" rel="noreferrer">
                 <i class="bi bi-box-arrow-up-right me-1"></i>API Docs
               </a>
             </li>
@@ -40,4 +41,6 @@ import { RouterModule } from '@angular/router';
     </nav>
   `
 })
-export class NavbarComponent { }
+export class NavbarComponent {
+  readonly environment = environment;
+}
