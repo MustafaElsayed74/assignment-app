@@ -30,6 +30,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+!BlockedCountriesApi/frontend/src/app/logs/
+!BlockedCountriesApi/frontend/src/app/logs/**
 
 # Visual Studio files
 .vs/
