@@ -35,24 +35,49 @@ public class IpGeolocationService : IIpGeolocationService
             }
 
             var content = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<IpLookupResult>(content, new JsonSerializerOptions
+            var options = new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
-            });
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+            };
+            
+            var apiResult = JsonSerializer.Deserialize<IpApiResult>(content, options);
 
             // Handle cases where ipapi.co returns an error object (e.g., rate limit) within a 200 OK
-            if (result != null && string.IsNullOrEmpty(result.CountryCode) && content.Contains("error"))
+            if (apiResult != null && string.IsNullOrEmpty(apiResult.CountryCode) && content.Contains("error"))
             {
                 _logger.LogWarning("IP API returned an error for IP {IpAddress}: {Content}", ipAddress, content);
                 return null;
             }
 
-            return result;
+            if (apiResult == null) return null;
+
+            return new IpLookupResult
+            {
+                Ip = apiResult.Ip ?? "",
+                CountryCode = apiResult.CountryCode ?? "",
+                CountryName = apiResult.CountryName ?? "",
+                City = apiResult.City ?? "",
+                Region = apiResult.Region ?? "",
+                Isp = apiResult.Org ?? "",
+                Timezone = apiResult.Timezone ?? ""
+            };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while looking up IP {IpAddress}", ipAddress);
             return null;
         }
+    }
+
+    private class IpApiResult
+    {
+        public string? Ip { get; set; }
+        public string? CountryCode { get; set; }
+        public string? CountryName { get; set; }
+        public string? City { get; set; }
+        public string? Region { get; set; }
+        public string? Org { get; set; }
+        public string? Timezone { get; set; }
     }
 }
