@@ -1,0 +1,107 @@
+<div class="container mt-5">
+  <div class="row mb-5">
+    <div class="col-md-12 text-center">
+      <h1 class="display-4">Blocked Countries Management</h1>
+      <p class="lead">Pro UI for blocking and managing restricted regions.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">Add Unconditional Block</h5>
+          <div class="input-group mt-3">
+            <input type="text" class="form-control" placeholder="Country Code (e.g. US)" [(ngModel)]="newCountryCode" maxlength="2" />
+            <button class="btn btn-primary" (click)="addCountry()">Block</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">Add Temporal Block</h5>
+          <div class="mt-3">
+            <input type="text" class="form-control mb-2" placeholder="Country Code" [(ngModel)]="newCountryCode" maxlength="2" />
+            <input type="number" class="form-control mb-2" placeholder="Duration (minutes)" [(ngModel)]="tempDuration" min="1" />
+            <button class="btn btn-warning w-100" (click)="addTemporal()">Temp Block</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 bg-light h-100">
+        <div class="card-body text-center d-flex flex-column justify-content-center">
+          <h1 class="display-1 text-danger">{{blockedCountries.length}}</h1>
+          <p class="text-muted">Currently Blocked Countries</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <h3 class="mb-3 border-bottom pb-2">Blocked List</h3>
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Country Code</th>
+            <th>Type</th>
+            <th>Expiry Date</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let country of blockedCountries">
+            <td class="fw-bold">{{country.countryCode}}</td>
+            <td>
+              <span class="badge" [ngClass]="country.isTemporal ? 'bg-warning text-dark' : 'bg-danger'">
+                {{country.isTemporal ? 'Temporal' : 'Permanent'}}
+              </span>
+            </td>
+            <td>{{country.expiresAt | date:'medium' || 'Never'}}</td>
+            <td class="text-end">
+              <button class="btn btn-sm btn-outline-danger" (click)="removeCountry(country.countryCode)">Unblock</button>
+            </td>
+          </tr>
+          <tr *ngIf="blockedCountries.length === 0">
+            <td colspan="4" class="text-center py-4 text-muted">No blocked countries found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <h3 class="mb-3 border-bottom pb-2">Block Logs</h3>
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>IP Address</th>
+            <th>Country Code</th>
+            <th>Blocked Status</th>
+            <th>User Agent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td>{{log.timestamp | date:'short'}}</td>
+            <td>{{log.ipAddress}}</td>
+            <td>{{log.countryCode}}</td>
+            <td>
+              <span class="badge" [ngClass]="log.wasBlocked ? 'bg-danger' : 'bg-success'">
+                {{log.wasBlocked ? 'Blocked' : 'Allowed'}}
+              </span>
+            </td>
+            <td class="text-truncate w-25" [title]="log.userAgent">{{log.userAgent}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

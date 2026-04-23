@@ -28,6 +28,15 @@ builder.Services.AddScoped<IBlockAttemptService, BlockAttemptService>();
 // Register Background Service
 builder.Services.AddHostedService<TemporalBlockCleanupService>();
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocaldev",
+        b => b.WithOrigins("http://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -68,6 +77,8 @@ app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowLocaldev");
 
 app.UseAuthorization();
 
