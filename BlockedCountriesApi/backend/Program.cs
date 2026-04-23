@@ -31,8 +31,8 @@ builder.Services.AddHostedService<TemporalBlockCleanupService>();
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocaldev",
-        b => b.WithOrigins("http://localhost:4200")
+    options.AddPolicy("AllowAll",
+        b => b.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader());
 });
@@ -78,7 +78,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowLocaldev");
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
