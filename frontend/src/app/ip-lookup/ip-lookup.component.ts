@@ -4,17 +4,24 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../api.service';
 
 @Component({
-  selector: 'app-ip-lookup',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  template: `
+    selector: 'app-ip-lookup',
+    standalone: true,
+    imports: [CommonModule, FormsModule],
+    template: `
+    <section class="page-block fade-in-up">
+    <div class="row align-items-center mb-4">
+      <div class="col-lg-8">
+        <h2 class="fw-bold mb-1"><i class="bi bi-grid-1x2-fill text-primary me-2"></i>Operations Dashboard</h2>
+        <p class="text-muted mb-0">Investigate IP geography and validate live access policy outcomes.</p>
+      </div>
+    </div>
     <div class="row align-items-stretch g-4 mt-2">
       <!-- IP Lookup Widget -->
       <div class="col-md-6 mb-4">
         <h3 class="fw-bold mb-3"><i class="bi bi-geo-alt-fill text-primary"></i> Geolocation Scanner</h3>
         <p class="text-muted">Enter an IP to locate it globally and discover network ISP details.</p>
 
-        <div class="card shadow border-0 rounded-4 overflow-hidden mt-4">
+        <div class="card dashboard-card border-0 rounded-4 overflow-hidden mt-4">
           <div class="card-header bg-primary text-white pt-3 pb-3 border-0">
             <strong class="fs-6 d-flex align-items-center">IP Address Lookup</strong>
           </div>
@@ -57,7 +64,7 @@ import { ApiService } from '../api.service';
         <h3 class="fw-bold mb-3"><i class="bi bi-person-bounding-box text-success"></i> Identity Validation</h3>
         <p class="text-muted">Test local IP access against active conditional rulesets.</p>
         
-        <div class="card shadow border-0 rounded-4 mt-4 text-center h-100 d-flex flex-column">
+        <div class="card dashboard-card border-0 rounded-4 mt-4 text-center h-100 d-flex flex-column">
           <div class="card-body p-5 d-flex flex-column justify-content-center flex-grow-1">
              <i class="bi bi-ethernet fs-1 text-muted mb-3 d-block"></i>
              <h4 class="card-title fw-bold">Test My Network Security</h4>
@@ -89,39 +96,40 @@ import { ApiService } from '../api.service';
         </div>
       </div>
     </div>
+    </section>
   `
 })
 export class IpLookupComponent {
-  customIp = '';
-  lookupResult: any = null;
-  lookupError = false;
+    customIp = '';
+    lookupResult: any = null;
+    lookupError = false;
 
-  checkingIP = false;
-  accessResult: any = null;
+    checkingIP = false;
+    accessResult: any = null;
 
-  constructor(private api: ApiService) { }
+    constructor(private api: ApiService) { }
 
-  lookupIp() {
-    this.lookupError = false;
-    this.lookupResult = null;
-    this.api.lookupIp(this.customIp).subscribe({
-      next: (res) => this.lookupResult = res,
-      error: () => this.lookupError = true
-    });
-  }
+    lookupIp() {
+        this.lookupError = false;
+        this.lookupResult = null;
+        this.api.lookupIp(this.customIp).subscribe({
+            next: (res) => this.lookupResult = res,
+            error: () => this.lookupError = true
+        });
+    }
 
-  checkMyIp() {
-    this.checkingIP = true;
-    this.accessResult = null;
-    this.api.checkBlock().subscribe({
-      next: (res) => {
-        this.checkingIP = false;
-        this.accessResult = res;
-      },
-      error: (err) => {
-        this.checkingIP = false;
-        this.accessResult = err.error || err;
-      }
-    });
-  }
+    checkMyIp() {
+        this.checkingIP = true;
+        this.accessResult = null;
+        this.api.checkBlock().subscribe({
+            next: (res) => {
+                this.checkingIP = false;
+                this.accessResult = res;
+            },
+            error: (err) => {
+                this.checkingIP = false;
+                this.accessResult = err.error || err;
+            }
+        });
+    }
 }

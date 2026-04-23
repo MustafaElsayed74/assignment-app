@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../api.service';
 
 @Component({
-  selector: 'app-logs',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-logs',
+    standalone: true,
+    imports: [CommonModule],
+    template: `
+    <section class="page-block fade-in-up">
     <div class="row mb-4">
       <div class="col-md-12 d-flex justify-content-between align-items-center">
         <div>
@@ -18,7 +19,7 @@ import { ApiService } from '../api.service';
     </div>
 
     <!-- Data Table -->
-    <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+    <div class="card dashboard-card border-0 rounded-4 overflow-hidden">
       <div class="table-responsive">
         <table class="table table-hover table-striped align-middle mb-0 text-sm">
           <thead class="table-dark text-uppercase small text-muted" style="letter-spacing: 0.5px">
@@ -54,31 +55,54 @@ import { ApiService } from '../api.service';
         </table>
       </div>
       <div class="card-footer bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-        <small class="text-muted fw-bold">Showing latest {{logs.length}} attempt entries</small>
-        <nav aria-label="Page navigation" *ngIf="logs.length > 0">
-          <ul class="pagination pagination-sm mb-0">
-            <li class="page-item disabled"><a class="page-link shadow-none" href="#">Previous</a></li>
-            <li class="page-item active"><a class="page-link shadow-none" href="#">1</a></li>
-            <li class="page-item disabled"><a class="page-link shadow-none" href="#">Next</a></li>
-          </ul>
-        </nav>
+        <small class="text-muted fw-bold">Page {{page}} / {{totalPages}} · {{totalCount}} total attempts</small>
+        <div class="btn-group" *ngIf="logs.length > 0">
+          <button class="btn btn-sm btn-outline-secondary" (click)="previousPage()" [disabled]="page <= 1">
+            <i class="bi bi-chevron-left"></i> Previous
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" (click)="nextPage()" [disabled]="page >= totalPages">
+            Next <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
       </div>
     </div>
+    </section>
   `
 })
 export class LogsComponent implements OnInit {
-  logs: any[] = [];
+    logs: any[] = [];
+  page = 1;
+  pageSize = 10;
+  totalPages = 1;
+  totalCount = 0;
 
-  constructor(private api: ApiService) { }
+    constructor(private api: ApiService) { }
 
-  ngOnInit(): void {
-    this.loadLogs();
-  }
+    ngOnInit(): void {
+        this.loadLogs();
+    }
 
-  loadLogs() {
-    this.api.getBlockLogs(1, 100).subscribe({
-      next: (res: any) => this.logs = res.data?.items || res.items || res,
-      error: (err: any) => console.error('Failed fetching logs', err)
-    });
-  }
+    loadLogs() {
+      this.api.getBlockLogs(this.page, this.pageSize).subscribe({
+        next: (res: any) => {
+          this.logs = res.items || res.data?.items || [];
+          this.totalCount = res.totalCount ?? this.logs.length;
+          this.totalPages = res.totalPages ?? 1;
+          this.page = res.page ?? this.page;
+        },
+            error: (err: any) => console.error('Failed fetching logs', err)
+        });
+    }
+
+    previousPage() {
+      if (this.page <= 1) return;
+      this.page--;
+      this.loadLogs();
+    }
+
+    nextPage() {
+      if (this.page >= this.totalPages) return;
+      this.page++;
+      this.loadLogs();
+    }
 }
